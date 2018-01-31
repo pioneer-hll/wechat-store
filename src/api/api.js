@@ -22,10 +22,12 @@ const user2session = (params) => wxRequest(params, apiMall + "/api/wechat/user2s
 const hostGoodsList = (params) => wxRequest(params, apiMall + '/api/home/hostGoodsList');
 const getHomeDisvocerList = (params) => wxRequest(params, apiMall + '/api/mall/discoverList');
 //查询商品列表
-const getGoodsList = (params) => wxRequest(params, apiMall + '/api/mall/searchGoodsList');
+const getGoodsList = (params) => wxRequest(params, 'https://weapp.sphvip.com/shop/goodsList');
+//const getGoodsList = (params) => wxRequest(params, apiMall + '/api/mall/searchGoodsList');
 
 //查询商品详情信息
-const goodsDetail = (params) => wxRequest(params, apiMall + '/api/mall/goods');
+const goodsDetail = (params) => wxRequest(params, 'https://weapp.sphvip.com/shop/goodsinfo');
+//const goodsDetail = (params) => wxRequest(params, apiMall + '/api/mall/goods');
 //商品加入购物车
 const addCart = (params) => wxRequest(params, apiMall + '/api/mall/goodsCart/add');
 //用户的购物车商品列表

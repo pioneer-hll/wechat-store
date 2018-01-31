@@ -111,21 +111,19 @@
           page: currentPage || 1,
           size: size || 10,
           searchKeyWords: this.keyword,
-          cateCode: this.cateCode || "",
+          category_id: this.cateCode || "",
           sort: this.sort,
           skuval: this.skuval
         }
       });
-      if (json.data.code == 0) {
-        that.list = [...that.list, ...json.data.list];
-        that.page_total = json.data.page_total;
+      console.log(json);
+        that.list = [...that.list, ...json.data.data];
+        that.page_total = json.data.total;
         if (json.data.page_total == 0) {
           //暂无数据
           that.is_empty = true;
         }
-      } else {
-        tip.error(json.data.msg);
-      }
+
       that.showLoading = false;
       that.$apply();
       if (keyword.length > 0) {
@@ -138,6 +136,28 @@
           }
         });
       }
+      // if (json.data.code == 0) {
+      //   that.list = [...that.list, ...json.data.list];
+      //   that.page_total = json.data.page_total;
+      //   if (json.data.page_total == 0) {
+      //     //暂无数据
+      //     that.is_empty = true;
+      //   }
+      // } else {
+      //   tip.error(json.data.msg);
+      // }
+      // that.showLoading = false;
+      // that.$apply();
+      // if (keyword.length > 0) {
+      //   let userSpecialInfo = wepy.getStorageSync(USER_SPECICAL_INFO) || {};
+      //   let openId = userSpecialInfo.openid;
+      //   const resultJson = await api.addSearchKeyword({
+      //     query: {
+      //       openId: openId,
+      //       keyword: keyword
+      //     }
+      //   });
+      // }
     }
     async clearUserKeywords() {
       let userSpecialInfo = wepy.getStorageSync(USER_SPECICAL_INFO) || {};
