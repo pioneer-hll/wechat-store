@@ -342,6 +342,11 @@ export default class goodsDetail extends wepy.page {
     let that = this;
     let userSpecialInfo = wepy.getStorageSync(USER_SPECICAL_INFO) || {};
     let openId = userSpecialInfo.openid;
+    console.log(openId);
+    console.log(that.goodsId);
+    console.log(this.detail.goodsSkuValIds);
+    console.log(this.purchasetype);
+    console.log(this.orderNum);
     const json = await api.addCart({
       query: {
         openId: openId,
@@ -351,6 +356,7 @@ export default class goodsDetail extends wepy.page {
         num: this.orderNum
       }
     });
+    console.log(json);
     if (json.data.code == 0) {
       this.winHeight = "100%";
       this.animation.height(0).step();

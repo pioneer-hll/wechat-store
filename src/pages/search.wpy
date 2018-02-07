@@ -108,7 +108,7 @@
       let that = this;
       const json = await api.getGoodsList({
         query: {
-          page: currentPage || 1,
+          current_page: currentPage || 1,
           size: size || 10,
           searchKeyWords: this.keyword,
           category_id: this.cateCode || "",

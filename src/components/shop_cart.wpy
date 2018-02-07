@@ -5,14 +5,14 @@
         <swipeDelete :swipeData="item" @delItem.user="handleDelItem">
           <!-- <view class="a-goods-conts {{item.ischecked? 'active':''}}"  > -->
           <view class="goods-info">
-            <icon class="icon_check" type="success" color="{{item.ischecked?'red':'rgb(153,153,153)'}}" @tap.stop="selectTap" data-index="{{index}}" data-id="{{item.id}}" size="20" />
+            <icon class="icon_check" type="success" color="{{item.options.ischecked?'red':'rgb(153,153,153)'}}" @tap.stop="selectTap" data-index="{{index}}" data-id="{{item.id}}" size="20" />
             <view class="img-box">
-              <image src="{{item.thumLogo}}" class="img" />
+              <image src="{{item.options.logo}}" class="img" />
             </view>
             <view class="text-box">
               <view class="goods-title">
-                <navigator url="/pages/goods_detail?id={{item.goodsId}}">
-                  {{item.goodsName}}
+                <navigator url="/pages/goods_detail?id={{item.id}}">
+                  {{item.name}}
                 </navigator>
               </view>
               <!--  -->
@@ -22,9 +22,9 @@
               </view>
               <view class="goods-price">¥ {{item.price}}</view>
               <view class="buy-num">
-                <view class="jian-btn {{item.num==1? 'disabled' : ''}}" catchtap="jianBtnTap" data-index="{{index}}" data-id="{{item.id}}">-</view>
-                <input type="number" value="{{item.num}}" disabled/>
-                <view class="jia-btn {{item.num==1000? 'disabled' : ''}}" catchtap="jiaBtnTap" data-index="{{index}}" data-id="{{item.id}}">+</view>
+                <view class="jian-btn {{item.qty==1? 'disabled' : ''}}" catchtap="jianBtnTap" data-index="{{index}}" data-id="{{item.id}}">-</view>
+                <input type="number" value="{{item.qty}}" disabled/>
+                <view class="jia-btn {{item.qty==1000? 'disabled' : ''}}" catchtap="jiaBtnTap" data-index="{{index}}" data-id="{{item.id}}">+</view>
               </view>
             </view>
           </view>
@@ -84,20 +84,37 @@
           openId: openId
         }
       });
-      if (json.data.code == 0) {
-        let data = json.data;
-        this.list = data.list;
-        this.totalPrice = data.totalPrice;
-        for (var i = 0; i < this.list.length; i++) {
-          if (!this.list[i].ischecked) {
-            this.allChecked = false;
-            break;
-          }
-        }
-      } else {
-        tip.error(json.data.msg)
-      }
+
+        if (json.data.code == 0) {
+            let data = json.data;
+            this.list = data.list;
+            this.totalPrice = data.totalPrice;
+
+            for (var i = 0; i < this.list.length; i++) {
+                if (!this.list[i].options.ischecked) {
+                    this.allChecked = false;
+                    this.totalPrice -= parseInt(this.list[i].price)*parseInt(this.list[i].qty);
+                }
+            }
+        }else {
+              tip.error(json.data.msg)
+            }
+
       that.$apply();
+      // if (json.data.code == 0) {
+      //   let data = json.data;
+      //   this.list = data.list;
+      //   this.totalPrice = data.totalPrice;
+      //   for (var i = 0; i < this.list.length; i++) {
+      //     if (!this.list[i].ischecked) {
+      //       this.allChecked = false;
+      //       break;
+      //     }
+      //   }
+      // } else {
+      //   tip.error(json.data.msg)
+      // }
+      // that.$apply();
     }
     onLoad() {
       let that = this;
@@ -112,17 +129,23 @@
       let openId = userSpecialInfo.openid;
       const json = await api.cartCheck({
         query: {
-          openId: openId,
-          id: id
+            openId: openId,
+            id: id
         }
       });
       if (json.data.code == 0) {
         // 购物车数据
-        this.list[index].ischecked = !ischecked;
-        if (this.list[index].ischecked) {
-          this.totalPrice += parseInt(this.list[index].priceSubtotal);
+        this.list[index].options.ischecked = !ischecked;
+        let num = this.list[index].qty;
+        if (this.list[index].options.ischecked) {
+          this.totalPrice += parseInt(this.list[index].price*num);
         } else {
-          this.totalPrice -= parseInt(this.list[index].priceSubtotal);
+          this.totalPrice -= parseInt(this.list[index].price*num);
+        }
+        if(this.totalPrice != json.data.totalPrice){
+            this.allChecked = 0;
+        }else {
+            this.allChecked = 1;
         }
       } else {
         tip.error(json.data.msg)
@@ -215,9 +238,9 @@
       if (json.data.code == 0) {
         this.totalPrice = 0;
         for (var i = 0; i < this.list.length; i++) {
-          this.list[i].ischecked = !this.allChecked;
+          this.list[i].options.ischecked = !this.allChecked;
           if (!this.allChecked) {
-            this.totalPrice += parseInt(this.list[i].priceSubtotal);
+            this.totalPrice += parseInt(this.list[i].price)*parseInt(this.list[i].qty);
           }
         }
         this.allChecked = !this.allChecked;
@@ -235,11 +258,10 @@
       selectTap(e) {
         var id = e.currentTarget.dataset.id;
         var index = parseInt(e.currentTarget.dataset.index);
-        var ischecked = this.list[index].ischecked;
+        var ischecked = this.list[index].options.ischecked;
         this.checkGoods(id, index, ischecked);
       },
       selectAll() {
-        console.log("sele....");
         this.checkAllGoods();
       },
       getCartListMethod() {
