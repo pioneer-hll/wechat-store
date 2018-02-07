@@ -9,9 +9,8 @@
                 <view class="info" wx:for="{{item.attrs}}" wx:key="item">
                     <view>{{item.attrName.attrName}}：</view><view wx:for="{{item.attrValList}}" wx:key="item">{{item.attrVal}} </view>
                 </view>
+            </navigator>
         </view>
-        </navigator>
-    </view>
     </view>
 </template>
 <script>
