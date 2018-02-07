@@ -164,7 +164,7 @@
       });
       if (json.data.code == 0) {
         // 购物车数据
-        this.list[index].num = num;
+        this.list[index].qty = num;
         this.totalPrice = this.totalPrice - this.list[index].price;
         this.operating = false;
       } else {
@@ -184,7 +184,7 @@
       });
       if (json.data.code == 0) {
         // 购物车数据
-        this.list[index].num = num;
+        this.list[index].qty = num;
         this.totalPrice = parseInt(this.totalPrice) + parseInt(this.list[index].price);
         this.operating = false;
       } else {
@@ -199,23 +199,33 @@
       const json = await api.cartDel({
         query: {
           openId: openId,
-          cartIdList: [id],
+          id: id,
         }
       });
       if (json.data.code == 0) {
         // 购物车数据
-        let retList = [];
+        let data = json.data;
+        this.list = data.list;
+        this.totalPrice = data.totalPrice;
+
         for (var i = 0; i < this.list.length; i++) {
-          if (this.list[i].id == id) {
-            if (this.list[i].ischecked) {
-              this.totalPrice -= parseInt(this.list[i].priceSubtotal);
+            if (!this.list[i].options.ischecked) {
+                this.allChecked = false;
+                this.totalPrice -= parseInt(this.list[i].price)*parseInt(this.list[i].qty);
             }
-            continue;
-          } else {
-            retList.push(this.list[i]);
-          }
         }
-        this.list = retList;
+        // let retList = [];
+        // for (var i = 0; i < this.list.length; i++) {
+        //   if (this.list[i].id == id) {
+        //     if (this.list[i].ischecked) {
+        //       this.totalPrice -= parseInt(this.list[i].priceSubtotal);
+        //     }
+        //     continue;
+        //   } else {
+        //     retList.push(this.list[i]);
+        //   }
+        // }
+        // this.list = retList;
       } else {
         tip.error(json.data.msg)
       }
@@ -268,13 +278,13 @@
         this.getCartList();
       },
       jianBtnTap(e) {
-        if (this.operating) {
+          if (this.operating) {
           return;
         }
         this.operating = true;
         var id = e.currentTarget.dataset.id;
         var index = parseInt(e.currentTarget.dataset.index);
-        var num = this.list[index].num;
+        var num = this.list[index].qty;
         // 如果只有1件了，就不允许再减了
         if (num > 1) {
           num--;
@@ -290,7 +300,7 @@
         this.operating = true;
         var id = e.currentTarget.dataset.id;
         var index = parseInt(e.currentTarget.dataset.index);
-        var num = this.list[index].num;
+        var num = this.list[index].qty;
         // 自增
         num++;
         this.addGoodNum(id, num, index);

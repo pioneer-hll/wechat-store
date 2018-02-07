@@ -39,9 +39,11 @@ const cartCheck = (params) => wxRequest(params, 'http://www.wechat.cn/shop/getsh
 //购物车的商品选中状态(全选)
 const cartCheckAll = (params) => wxRequest(params, 'http://www.wechat.cn/shop/getshopcart');
 //购物车的商品删除
-const cartDel = (params) => wxRequest(params, apiMall + '/api/mall/goodsCart/delete');
+const cartDel = (params) => wxRequest(params, 'http://www.wechat.cn/shop/deleteCart');
+//const cartDel = (params) => wxRequest(params, apiMall + '/api/mall/goodsCart/delete');
 //购物车的商品数量更新
-const cartUpdateNum = (params) => wxRequest(params, apiMall + '/api/mall/goodsCart/updateNum');
+const cartUpdateNum = (params) => wxRequest(params, 'http://www.wechat.cn/shop/updateNum');
+//const cartUpdateNum = (params) => wxRequest(params, apiMall + '/api/mall/goodsCart/updateNum');
 //直接购买商品
 const preOrder = (params) => wxRequest(params, apiMall + '/api/mall/goodsOrder/commitData');
 
