@@ -7,7 +7,9 @@
           <view class="goods-info">
             <icon class="icon_check" type="success" color="{{item.options.ischecked?'red':'rgb(153,153,153)'}}" @tap.stop="selectTap" data-index="{{index}}" data-id="{{item.id}}" size="20" />
             <view class="img-box">
-              <image src="{{item.options.logo}}" class="img" />
+              <navigator url="/pages/goods_detail?id={{item.id}}">
+                <image src="{{item.options.logo}}" class="img" />
+              </navigator>>
             </view>
             <view class="text-box">
               <view class="goods-title">
@@ -79,6 +81,7 @@
       let that = this;
       let userSpecialInfo = wepy.getStorageSync(USER_SPECICAL_INFO) || {};
       let openId = userSpecialInfo.openid;
+      // console.log(openId);
       const json = await api.cartList({
         query: {
           openId: openId
